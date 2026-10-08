@@ -65,10 +65,9 @@ npm run android      # build + cap sync + abre Android Studio
 
 ## Estado
 
-- El código se escribió sin poder ejecutar `npm install` (sin acceso al registro de npm), así que **nunca se ha compilado**. Primera tarea: `npm install` y `npm run dev`, y corregir lo que falle.
-- La carpeta `android/` aún no existe; se genera con `npx cap add android`.
-- Git aún no está inicializado en esta carpeta: hacer `git init -b main` y el primer commit.
-- El repo de GitHub (privado) se llamará `antojo`.
+- `npm run build` compila sin errores y la app está probada en el navegador (alta, edición, filtros, comprado, borrado, persistencia).
+- La carpeta `android/` ya está generada (`npx cap add android`) y en el repo. Falta probarla en Android Studio / en el móvil.
+- Repo en GitHub (privado): `aropero8/antojo`, rama `main`.
 
 ## Convenciones
 
