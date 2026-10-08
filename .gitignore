@@ -1,0 +1,34 @@
+# Dependencias
+node_modules/
+
+# Build web
+dist/
+
+# Logs
+npm-debug.log*
+*.log
+
+# Entorno / secretos
+.env
+.env.*
+!.env.example
+
+# Editor y sistema
+.vscode/*
+!.vscode/extensions.json
+.idea/
+.DS_Store
+Thumbs.db
+
+# Configuración local de Claude Code
+.claude/
+
+# Android (la carpeta android/ SÍ se sube; Capacitor añade su propio
+# .gitignore dentro, esto es por si acaso)
+android/app/build/
+android/build/
+android/.gradle/
+android/local.properties
+android/app/release/
+*.keystore
+*.jks
