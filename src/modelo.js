@@ -13,6 +13,20 @@ export const ordenarDeseos = (a, b) =>
 export const fmtPrecio = (n) =>
   new Intl.NumberFormat('es-ES', { style: 'currency', currency: 'EUR' }).format(n);
 
+// Suma de precios; los deseos sin precio ('') cuentan 0.
+export const sumaPrecios = (deseos) => deseos.reduce((s, d) => s + (Number(d.precio) || 0), 0);
+
+export const urlDe = (enlace) => (/^https?:\/\//i.test(enlace) ? enlace : `https://${enlace}`);
+
+// Lo que se muestra de un enlace: el dominio sin "www." ("amazon.es").
+export const dominioDe = (enlace) => {
+  try {
+    return new URL(urlDe(enlace)).hostname.replace(/^www\./, '') || 'Enlace';
+  } catch {
+    return 'Enlace';
+  }
+};
+
 // Texto del formulario → número. '' si está vacío; NaN si no es un precio válido.
 export const leerPrecio = (v) => {
   const s = String(v).trim().replace(',', '.');

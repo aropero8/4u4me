@@ -31,9 +31,11 @@ src/
   components/
     Login.jsx         "¿Quién eres?" + PIN
     Principal.jsx     estado de datos, pestañas (scroll-snap), acciones, avisos
-    Lista.jsx         lista de una persona: filtros, total, comprados
+    Lista.jsx         lista de una persona: grupos por prioridad, totales, comprados plegados
     Deseo.jsx         tarjeta: editable (propia) o con reserva (ajena)
-    FormDeseo.jsx     hoja inferior de alta/edición
+    FormDeseo.jsx     hoja inferior de alta/edición/borrado
+    Icono.jsx         iconos SVG de trazo hechos a mano (sin librería)
+    Logo.jsx          logotipo (regalo sobre el degradado de la marca)
 supabase/
   schema.sql          tablas, trigger de perfiles, permisos, RLS y Realtime
   pruebas_rls.sql     pruebas de RLS para el SQL Editor (todo en una transacción con rollback)
@@ -55,9 +57,11 @@ Los emails de las cuentas están en dos sitios que deben coincidir: `src/persona
 
 ## Funcionalidad actual
 
-- Pestañas Alberto / Alba (tocar o deslizar, con scroll-snap); se abre en la propia.
-- Lista propia: alta, edición, borrar con confirmación, marcar comprado, filtros con contador, total en € de lo pendiente, vista Pendientes / Comprados. Orden por prioridad y luego por fecha (más reciente primero).
-- Lista ajena: solo lectura; "Lo regalo yo" reserva; "Reservado por ti" + "Anular".
+- Pestañas Alberto / Alba como control segmentado (tocar o deslizar, con scroll-snap; el indicador sigue al carril con `--progreso`); se abre en la propia.
+- Lista propia: alta (botón "Añadir"), marcar comprado con el círculo (aviso con "Deshacer"), tocar la tarjeta para editar; borrar está en la hoja de edición con confirmación dentro de la propia hoja (sin `confirm()` nativo). Pendientes agrupados por prioridad con contador y subtotal; total en € arriba; "Comprados" plegado al final. Dentro de cada grupo, el más reciente primero.
+- Lista ajena: solo lectura; "Lo regalo yo" reserva; "Lo regalas tú" + "Anular"; resumen "Le regalas N cosas · X €" arriba.
+- Hoja de edición: tocar fuera solo cierra si no hay cambios; Escape cierra.
+- Estilo: tema oscuro; colores en variables de `:root` en `App.css` (marca lila → rosa en `--degradado`, prioridades `--muy`/`--necesario`/`--capricho`, reservas `--regalo`). `capacitor.config.json` pone el mismo fondo (`backgroundColor`) para que no haya destello blanco al abrir.
 - Realtime: ante cualquier cambio en `deseos` o `reservas` se recarga todo (los datos son pocos).
 - Sin conexión: se muestra la copia guardada (`antojo_copia`, ligada al uid). Los cambios no se encolan: se avisa si fallan y el formulario no se cierra.
 - Identidad (`antojo_identidad`) guardada aparte de la sesión de Supabase para poder abrir sin conexión aunque el token haya caducado.
@@ -91,5 +95,7 @@ npm run android      # build + cap sync + abre Android Studio
 
 - Foto del producto con `@capacitor/camera` (y Supabase Storage).
 - Editar sin conexión con cola de cambios.
-- Icono y splash propios (`@capacitor/assets`).
+- Icono y splash propios (`@capacitor/assets`), a partir de `Logo.jsx`.
+- Que el botón Atrás de Android cierre la hoja o el menú en vez de salir (`@capacitor/app`).
+- Vibración al marcar comprado o reservar (`@capacitor/haptics`).
 - Licencia (MIT) si el repo se hace público.

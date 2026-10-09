@@ -1,64 +1,121 @@
 import { useMemo, useState } from 'react';
-import { PRIORIDADES, ordenarDeseos, fmtPrecio } from '../modelo.js';
+import { PRIORIDADES, ordenarDeseos, fmtPrecio, sumaPrecios } from '../modelo.js';
 import Deseo from './Deseo.jsx';
+import Icono from './Icono.jsx';
 
-// Lista de una persona. La propia se edita; la de la otra persona es de solo
+const plural = (n, uno, varios) => `${n} ${n === 1 ? uno : varios}`;
+
+// Lista de una persona: lo pendiente agrupado por prioridad y lo comprado
+// plegado al final. La propia se edita; la de la otra persona es de solo
 // lectura y permite reservar ("Lo regalo yo").
-export default function Lista({ nombre, esMia, deseos, reservas, acciones }) {
-  const [filtro, setFiltro] = useState('todos');
+export default function Lista({ nombre, otro, esMia, deseos, reservas, acciones, onAnadir }) {
   const [verComprados, setVerComprados] = useState(false);
 
   const reservaDe = useMemo(() => new Map(reservas.map((r) => [r.deseo_id, r])), [reservas]);
 
-  const visibles = useMemo(
-    () =>
-      deseos
-        .filter((d) => (verComprados ? d.comprado : !d.comprado))
-        .filter((d) => filtro === 'todos' || d.prioridad === filtro)
-        .sort(ordenarDeseos),
-    [deseos, filtro, verComprados]
+  const pendientes = useMemo(() => deseos.filter((d) => !d.comprado).sort(ordenarDeseos), [deseos]);
+  const comprados = useMemo(() => deseos.filter((d) => d.comprado).sort((a, b) => b.creado - a.creado), [deseos]);
+  const grupos = Object.entries(PRIORIDADES)
+    .map(([k, p]) => ({ k, label: p.label, deseos: pendientes.filter((d) => d.prioridad === k) }))
+    .filter((g) => g.deseos.length);
+
+  const total = sumaPrecios(pendientes);
+  const misRegalos = esMia ? [] : pendientes.filter((d) => reservaDe.has(d.id));
+
+  const tarjetas = (lista) => (
+    <div className="lista">
+      {lista.map((d) => (
+        <Deseo key={d.id} deseo={d} editable={esMia} reserva={reservaDe.get(d.id)} acciones={acciones} />
+      ))}
+    </div>
   );
-
-  const pendientes = deseos.filter((d) => !d.comprado);
-  const total = pendientes
-    .filter((d) => filtro === 'todos' || d.prioridad === filtro)
-    .reduce((s, d) => s + (Number(d.precio) || 0), 0);
-  const contar = (p) => pendientes.filter((d) => d.prioridad === p).length;
-
-  let vacio;
-  if (filtro !== 'todos') vacio = 'No hay nada con esta prioridad.';
-  else if (verComprados) vacio = esMia ? 'Aún no has marcado nada como comprado.' : `${nombre} aún no ha comprado nada de su lista.`;
-  else vacio = esMia ? 'Nada por aquí. Pulsa + para añadir algo que quieras o necesites.' : `${nombre} aún no ha apuntado nada.`;
 
   return (
     <>
-      <div className="resumen">
-        <p className="sub">
-          {pendientes.length} pendiente{pendientes.length !== 1 && 's'}
-          {total > 0 && ` · ${fmtPrecio(total)}`}
+      {pendientes.length > 0 && (
+        <div className="resumen">
+          <p>
+            <b>{plural(pendientes.length, 'deseo', 'deseos')}</b> {pendientes.length === 1 ? 'pendiente' : 'pendientes'}
+          </p>
+          {total > 0 && <p className="total">{fmtPrecio(total)}</p>}
+        </div>
+      )}
+      {misRegalos.length > 0 && (
+        <p className="mis-regalos">
+          <Icono nombre="regalo" tamano={16} />
+          Le regalas {plural(misRegalos.length, 'cosa', 'cosas')}
+          {sumaPrecios(misRegalos) > 0 && ` · ${fmtPrecio(sumaPrecios(misRegalos))}`}
         </p>
-        <button className={`chip ghost ${verComprados ? 'on' : ''}`} onClick={() => setVerComprados((v) => !v)}>
-          {verComprados ? 'Ver pendientes' : 'Comprados'}
-        </button>
-      </div>
+      )}
 
-      <nav className="filtros">
-        <button className={`chip ${filtro === 'todos' ? 'on' : ''}`} onClick={() => setFiltro('todos')}>
-          Todos
-        </button>
-        {Object.entries(PRIORIDADES).map(([k, p]) => (
-          <button key={k} className={`chip p-${k} ${filtro === k ? 'on' : ''}`} onClick={() => setFiltro(k)}>
-            {p.label} <span className="n">{contar(k)}</span>
-          </button>
-        ))}
-      </nav>
+      {pendientes.length === 0 && <Vacio esMia={esMia} nombre={nombre} otro={otro} hayComprados={comprados.length > 0} onAnadir={onAnadir} />}
 
-      <div className="lista">
-        {visibles.length === 0 && <div className="vacio">{vacio}</div>}
-        {visibles.map((d) => (
-          <Deseo key={d.id} deseo={d} editable={esMia} reserva={reservaDe.get(d.id)} acciones={acciones} />
-        ))}
-      </div>
+      {grupos.map((g) => (
+        <section key={g.k} className={`grupo p-${g.k}`}>
+          <h3 className="grupo-titulo">
+            <span className="punto" />
+            {g.label}
+            <span className="n">{g.deseos.length}</span>
+            {g.deseos.length > 1 && sumaPrecios(g.deseos) > 0 && (
+              <span className="subtotal">{fmtPrecio(sumaPrecios(g.deseos))}</span>
+            )}
+          </h3>
+          {tarjetas(g.deseos)}
+        </section>
+      ))}
+
+      {comprados.length > 0 && (
+        <section className="grupo comprados">
+          <h3>
+            <button className="grupo-titulo" aria-expanded={verComprados} onClick={() => setVerComprados((v) => !v)}>
+              Comprados
+              <span className="n">{comprados.length}</span>
+              <Icono nombre="abajo" tamano={18} className="flecha" />
+            </button>
+          </h3>
+          {verComprados && tarjetas(comprados)}
+        </section>
+      )}
+
+      {deseos.length > 0 && (
+        <p className="pista">
+          {esMia ? (
+            'Toca un deseo para editarlo o borrarlo.'
+          ) : (
+            <>
+              <Icono nombre="candado" tamano={14} />
+              {nombre} no ve lo que le reservas.
+            </>
+          )}
+        </p>
+      )}
     </>
+  );
+}
+
+function Vacio({ esMia, nombre, otro, hayComprados, onAnadir }) {
+  if (esMia) {
+    return (
+      <div className="vacio">
+        <span className="emoji" aria-hidden="true">{hayComprados ? '🎉' : '✨'}</span>
+        <h3>{hayComprados ? '¡Lo tienes todo!' : 'Tu lista está vacía'}</h3>
+        <p>
+          {hayComprados
+            ? '¿Se te antoja algo más?'
+            : `Apunta lo que te apetece o necesitas; ${otro} lo verá al momento.`}
+        </p>
+        <button className="btn" onClick={onAnadir}>
+          <Icono nombre="mas" tamano={18} />
+          Añadir un deseo
+        </button>
+      </div>
+    );
+  }
+  return (
+    <div className="vacio">
+      <span className="emoji" aria-hidden="true">{hayComprados ? '🎉' : '🌱'}</span>
+      <h3>{hayComprados ? `${nombre} lo tiene todo` : `${nombre} aún no ha apuntado nada`}</h3>
+      <p>Cuando añada algo, aparecerá aquí al momento.</p>
+    </div>
   );
 }

@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { PERSONAS } from '../personas.js';
 import { iniciarSesion, esErrorDeRed } from '../supabase.js';
+import Logo from './Logo.jsx';
 
 // Pantalla "¿Quién eres?". Solo aparece la primera vez: luego la sesión se
 // recuerda en el móvil.
@@ -28,8 +29,12 @@ export default function Login({ onEntrar }) {
   }
 
   return (
-    <div className="pantalla centrada">
-      <h1>Antojo</h1>
+    <div className="pantalla">
+      <div className="marca">
+        <Logo tamano={68} />
+        <h1>Antojo</h1>
+        <p className="sub">Vuestra lista de deseos, con los regalos en secreto.</p>
+      </div>
       <form className="login" onSubmit={entrar}>
         <h2>¿Quién eres?</h2>
         <div className="quien">
@@ -37,7 +42,7 @@ export default function Login({ onEntrar }) {
             <button
               key={p.id}
               type="button"
-              className={`seg ${personaId === p.id ? 'on' : ''}`}
+              className={`persona ${personaId === p.id ? 'on' : ''}`}
               aria-pressed={personaId === p.id}
               onClick={() => {
                 setPersonaId(p.id);
@@ -52,10 +57,12 @@ export default function Login({ onEntrar }) {
           <label>
             PIN de {persona.nombre}
             <input
+              className="pin"
               autoFocus
               type="password"
               inputMode="numeric"
               autoComplete="current-password"
+              enterKeyHint="go"
               value={pin}
               onChange={(e) => setPin(e.target.value)}
             />

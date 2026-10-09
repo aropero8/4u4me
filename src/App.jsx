@@ -11,6 +11,7 @@ import { borrarCopia } from './datos.js';
 import { personaPorId } from './personas.js';
 import Login from './components/Login.jsx';
 import Principal from './components/Principal.jsx';
+import Logo from './components/Logo.jsx';
 
 export default function App() {
   const [identidad, setIdentidad] = useState(undefined); // undefined = comprobando
@@ -46,12 +47,15 @@ export default function App() {
 
   if (!configurado) {
     return (
-      <div className="pantalla centrada">
-        <h1>Antojo</h1>
-        <p className="sub">
-          Falta configurar Supabase: copia <code>.env.example</code> a <code>.env</code>, rellena la URL y la
-          clave anon, y vuelve a compilar.
-        </p>
+      <div className="pantalla">
+        <div className="marca">
+          <Logo tamano={68} />
+          <h1>Antojo</h1>
+          <p className="sub">
+            Falta configurar Supabase: copia <code>.env.example</code> a <code>.env</code>, rellena la URL y la
+            clave anon, y vuelve a compilar.
+          </p>
+        </div>
       </div>
     );
   }

@@ -7,8 +7,8 @@ Cada uno apunta lo que quiere o necesita con una prioridad, ve la lista del otro
 ## Funciones
 
 - Dos pestañas, **Alberto** y **Alba**. Se cambia tocando o deslizando; al abrir se muestra la tuya.
-- **Tu lista**: añadir, editar, borrar y marcar como comprado. Cada deseo tiene **nombre** y **prioridad** (Muy necesario, Necesario o Capricho) y, opcionalmente, **precio**, **enlace** y **nota**. Filtros por prioridad, total en euros de lo pendiente y vista de comprados.
-- **La lista de la otra persona**: solo lectura, con un botón **«Lo regalo yo»** en cada deseo para reservarlo. Si lo reservas, aparece «Reservado por ti» y puedes anularlo.
+- **Tu lista**: añadir con el botón **Añadir**, marcar como comprado con el círculo (el aviso permite **deshacer**) y tocar un deseo para editarlo o borrarlo. Cada deseo tiene **nombre** y **prioridad** (Muy necesario, Necesario o Capricho) y, opcionalmente, **precio**, **enlace** y **nota**. Lo pendiente se agrupa por prioridad, con el total en euros de cada grupo y de toda la lista; lo comprado queda plegado al final.
+- **La lista de la otra persona**: solo lectura, con un botón **«Lo regalo yo»** en cada deseo para reservarlo. Si lo reservas, aparece «Lo regalas tú» y puedes anularlo; arriba se ve cuántas cosas le regalas y cuánto suman.
 - **Las reservas son secretas**: el dueño de una lista nunca ve qué tiene reservado. Lo garantiza la base de datos (ver más abajo), no solo la interfaz.
 - Los cambios aparecen **en tiempo real** en el otro móvil.
 - **Sin conexión** se ve la última copia guardada. Para cambiar algo hace falta internet; si un cambio no se guarda, la app avisa.
@@ -83,9 +83,11 @@ src/
   components/
     Login.jsx         pantalla «¿Quién eres?»
     Principal.jsx     pestañas, datos y acciones
-    Lista.jsx         lista de una persona con filtros y total
+    Lista.jsx         lista de una persona agrupada por prioridad, con totales
     Deseo.jsx         tarjeta de un deseo (editable o con reserva)
-    FormDeseo.jsx     hoja para crear o editar un deseo
+    FormDeseo.jsx     hoja para crear, editar o borrar un deseo
+    Icono.jsx         iconos SVG propios (sin librería)
+    Logo.jsx          logotipo de Antojo
 supabase/
   schema.sql          tablas, políticas RLS y Realtime
   pruebas_rls.sql     pruebas de las políticas
