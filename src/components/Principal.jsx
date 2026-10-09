@@ -200,7 +200,7 @@ export default function Principal({ uid, persona, onSalir }) {
     <div className="app">
       <header className="top">
         <Logo tamano={32} />
-        <h1>Antojo</h1>
+        <h1>4u4me</h1>
         <button
           className="icono-btn"
           aria-label="Opciones"
@@ -263,7 +263,7 @@ export default function Principal({ uid, persona, onSalir }) {
       )}
       {miPerfilFalta && (
         <div className="estado error">
-          Tu cuenta no figura como miembro de Antojo. Revisa que el email coincide con supabase/schema.sql.
+          Tu cuenta no figura como miembro de 4u4me. Revisa que el email coincide con supabase/schema.sql.
         </div>
       )}
 

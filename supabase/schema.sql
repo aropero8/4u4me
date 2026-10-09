@@ -1,5 +1,5 @@
 -- =====================================================================
--- Antojo · esquema de Supabase
+-- 4u4me · esquema de Supabase
 --
 -- Ejecutar ENTERO, una sola vez, en el SQL Editor de un proyecto vacío.
 --
@@ -12,7 +12,7 @@
 -- ---------------------------------------------------------------------
 -- Miembros
 --
--- Solo estas dos cuentas forman parte de Antojo. Deben coincidir con
+-- Solo estas dos cuentas forman parte de 4u4me. Deben coincidir con
 -- los emails de src/personas.js. Cualquier otra cuenta que exista en
 -- Auth (por ejemplo, si alguien se registra) no puede leer ni escribir
 -- nada, y tampoco sirve para espiar las reservas de la propia lista.

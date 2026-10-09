@@ -4,7 +4,9 @@ Contexto del proyecto para Claude Code.
 
 ## Qué es
 
-**Antojo**: app de wishlist para Android compartida entre dos personas, **Alberto** y **Alba**. Cada uno apunta cosas que quiere o necesita con una prioridad, ve la lista del otro y puede reservar en secreto lo que le va a regalar. Uso personal, pero el repo es público en GitHub (licencia GPL-3.0 o posterior): debe quedar limpio y comprensible, y sin secretos.
+**4u4me**: app de wishlist para Android compartida entre dos personas, **Alberto** y **Alba**. Cada uno apunta cosas que quiere o necesita con una prioridad, ve la lista del otro y puede reservar en secreto lo que le va a regalar. Uso personal, pero el repo es público en GitHub (licencia GPL-3.0 o posterior): debe quedar limpio y comprensible, y sin secretos.
+
+**Nombre**: la app se llamaba **Antojo**. Lo visible (título, `appName`, `app_name` de Android, README, repo `aropero8/4u4me`) es ahora **4u4me**, pero los identificadores internos conservan "antojo" **a propósito y no deben renombrarse**: el `appId` `com.alberto.antojo` (cambiarlo hace que Android la trate como otra app y se pierde la migración de `wishlist_items`), los emails `@antojo.local` (son las cuentas de Supabase Auth y están en `schema.sql`), las claves de Preferences `antojo_*` (se perderían la sesión y la copia) y el prefijo del canal de Realtime.
 
 ## Stack
 
@@ -81,7 +83,7 @@ npm run android      # build + cap sync + abre Android Studio
 
 - La app y el esquema están hechos. Las políticas RLS se han probado con PGlite (Postgres en WASM) imitando Supabase, incluidas pruebas de mutación (debilitar cada política hace fallar `pruebas_rls.sql`).
 - La interfaz se ha probado en el navegador sin servidor (modo sin conexión, pestañas, solo lectura, avisos, cierre de sesión). Falta la prueba de extremo a extremo con el proyecto real de Supabase.
-- Repo en GitHub (público, GPL-3.0 o posterior, ver `LICENSE`): `aropero8/antojo`, rama `main`.
+- Repo en GitHub (público, GPL-3.0 o posterior, ver `LICENSE`): `aropero8/4u4me`, rama `main`.
 
 ## Convenciones
 

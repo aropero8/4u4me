@@ -50,7 +50,7 @@ export default function App() {
       <div className="pantalla">
         <div className="marca">
           <Logo tamano={68} />
-          <h1>Antojo</h1>
+          <h1>4u4me</h1>
           <p className="sub">
             Falta configurar Supabase: copia <code>.env.example</code> a <code>.env</code>, rellena la URL y la
             clave anon, y vuelve a compilar.

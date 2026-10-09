@@ -1,5 +1,5 @@
 -- =====================================================================
--- Antojo · pruebas de las políticas RLS
+-- 4u4me · pruebas de las políticas RLS
 --
 -- Ejecutar en el SQL Editor DESPUÉS de schema.sql y de crear las dos
 -- cuentas en Auth. Hace de Alberto, de Alba, de una cuenta ajena y de

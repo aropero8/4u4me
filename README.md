@@ -1,4 +1,4 @@
-# Antojo
+# 4u4me
 
 Wishlist compartida para Android entre dos personas, **Alberto** y **Alba**. Hecha con **React + Vite**, empaquetada con **Capacitor** y con los datos en **Supabase**.
 
@@ -20,7 +20,7 @@ Las reservas están en su propia tabla y las políticas RLS de Supabase (`supaba
 
 - Solo pueda leerlas y crearlas quien **no** es el dueño del deseo. Para el dueño, la tabla parece vacía; ni siquiera intentar reservar su propio deseo le da un error distinto según esté reservado o no.
 - Solo quien reservó pueda anular su reserva, y nadie pueda pasar un deseo a la otra persona para luego leer sus reservas.
-- Solo las dos cuentas de Antojo sean miembros: cualquier otra cuenta (por ejemplo, una creada para espiar) no ve nada.
+- Solo las dos cuentas de 4u4me sean miembros: cualquier otra cuenta (por ejemplo, una creada para espiar) no ve nada.
 - Realtime aplica las mismas políticas.
 
 `supabase/pruebas_rls.sql` comprueba todo esto haciéndose pasar por cada usuario, igual que la API con su sesión.
@@ -35,7 +35,7 @@ Lo único que RLS no puede impedir es el acceso de quien administra el proyecto 
 
 ## Configurar Supabase (una sola vez)
 
-1. **Crear el proyecto.** En supabase.com, *New project*: nombre `antojo`, una contraseña de base de datos (guárdala en tu gestor de contraseñas; la app no la usa) y la región más cercana (por ejemplo, *West EU (Ireland)*). Espera a que termine de crearse.
+1. **Crear el proyecto.** En supabase.com, *New project*: nombre `4u4me`, una contraseña de base de datos (guárdala en tu gestor de contraseñas; la app no la usa) y la región más cercana (por ejemplo, *West EU (Ireland)*). Espera a que termine de crearse.
 2. **Cerrar el registro.** *Authentication → Sign In / Providers*: desactiva **Allow new users to sign up** y guarda. Así nadie más puede crear cuentas.
 3. **Crear las tablas.** *SQL Editor → New query*: pega el contenido de `supabase/schema.sql` y pulsa **Run**. Debe terminar sin errores.
 4. **Crear las dos cuentas.** *Authentication → Users → Add user → Create new user*, una vez por persona:
@@ -87,7 +87,7 @@ src/
     Deseo.jsx         tarjeta de un deseo (editable o con reserva)
     FormDeseo.jsx     hoja para crear, editar o borrar un deseo
     Icono.jsx         iconos SVG propios (sin librería)
-    Logo.jsx          logotipo de Antojo
+    Logo.jsx          logotipo de 4u4me
 supabase/
   schema.sql          tablas, políticas RLS y Realtime
   pruebas_rls.sql     pruebas de las políticas
@@ -98,9 +98,9 @@ vite.config.js
 ## Notas
 
 - La carpeta `android/` se sube al repo (así lo recomienda Capacitor); sus builds y las claves de firma (`*.keystore`, `*.jks`) están en `.gitignore`, igual que el `.env`.
-- El identificador de la app es `com.alberto.antojo` (en `capacitor.config.json`).
+- El identificador de la app es `com.alberto.antojo` (en `capacitor.config.json`). Conserva el nombre anterior de la app, Antojo, igual que los emails de las cuentas (`@antojo.local`) y las claves que guarda en el móvil: cambiarlos rompería las instalaciones y las cuentas existentes.
 - En el plan gratuito, Supabase pausa los proyectos tras una semana sin uso. Si pasa, se reactiva desde el panel.
 
 ## Licencia
 
-Antojo es software libre: puedes redistribuirlo y modificarlo según los términos de la [GNU General Public License](LICENSE), versión 3 o (a tu elección) cualquier versión posterior. Se distribuye sin ninguna garantía.
+4u4me es software libre: puedes redistribuirlo y modificarlo según los términos de la [GNU General Public License](LICENSE), versión 3 o (a tu elección) cualquier versión posterior. Se distribuye sin ninguna garantía.

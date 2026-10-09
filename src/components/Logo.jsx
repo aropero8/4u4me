@@ -1,6 +1,6 @@
 import { useId } from 'react';
 
-// Marca de Antojo: un regalo sobre el degradado de la app.
+// Marca de 4u4me: un regalo sobre el degradado de la app.
 export default function Logo({ tamano = 40 }) {
   const degradado = useId();
   return (

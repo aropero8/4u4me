@@ -32,7 +32,7 @@ export default function Login({ onEntrar }) {
     <div className="pantalla">
       <div className="marca">
         <Logo tamano={68} />
-        <h1>Antojo</h1>
+        <h1>4u4me</h1>
         <p className="sub">Vuestra lista de deseos, con los regalos en secreto.</p>
       </div>
       <form className="login" onSubmit={entrar}>
