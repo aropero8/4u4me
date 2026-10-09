@@ -100,3 +100,7 @@ vite.config.js
 - La carpeta `android/` se sube al repo (así lo recomienda Capacitor); sus builds y las claves de firma (`*.keystore`, `*.jks`) están en `.gitignore`, igual que el `.env`.
 - El identificador de la app es `com.alberto.antojo` (en `capacitor.config.json`).
 - En el plan gratuito, Supabase pausa los proyectos tras una semana sin uso. Si pasa, se reactiva desde el panel.
+
+## Licencia
+
+Antojo es software libre: puedes redistribuirlo y modificarlo según los términos de la [GNU General Public License](LICENSE), versión 3 o (a tu elección) cualquier versión posterior. Se distribuye sin ninguna garantía.

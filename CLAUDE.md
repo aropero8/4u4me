@@ -4,7 +4,7 @@ Contexto del proyecto para Claude Code.
 
 ## Qué es
 
-**Antojo**: app de wishlist para Android compartida entre dos personas, **Alberto** y **Alba**. Cada uno apunta cosas que quiere o necesita con una prioridad, ve la lista del otro y puede reservar en secreto lo que le va a regalar. Uso personal, pero el repo (privado en GitHub) debe quedar limpio y comprensible por si en el futuro se comparte.
+**Antojo**: app de wishlist para Android compartida entre dos personas, **Alberto** y **Alba**. Cada uno apunta cosas que quiere o necesita con una prioridad, ve la lista del otro y puede reservar en secreto lo que le va a regalar. Uso personal, pero el repo es público en GitHub (licencia GPL-3.0 o posterior): debe quedar limpio y comprensible, y sin secretos.
 
 ## Stack
 
@@ -81,14 +81,14 @@ npm run android      # build + cap sync + abre Android Studio
 
 - La app y el esquema están hechos. Las políticas RLS se han probado con PGlite (Postgres en WASM) imitando Supabase, incluidas pruebas de mutación (debilitar cada política hace fallar `pruebas_rls.sql`).
 - La interfaz se ha probado en el navegador sin servidor (modo sin conexión, pestañas, solo lectura, avisos, cierre de sesión). Falta la prueba de extremo a extremo con el proyecto real de Supabase.
-- Repo en GitHub (privado): `aropero8/antojo`, rama `main`.
+- Repo en GitHub (público, GPL-3.0 o posterior, ver `LICENSE`): `aropero8/antojo`, rama `main`.
 
 ## Convenciones
 
 - UI, textos, nombres de variables y commits en **español**.
 - Mantener dependencias al mínimo; preguntar antes de añadir librerías.
 - Componentes en `src/components/`; acceso a datos en `src/`.
-- Git: la carpeta `android/` se sube; builds, `node_modules/`, `dist/`, `.env` y claves de firma (`*.keystore`, `*.jks`) están en `.gitignore`. Nunca subir claves de firma ni el `.env`.
+- Git: la carpeta `android/` se sube; builds, `node_modules/`, `dist/`, `.env` y claves de firma (`*.keystore`, `*.jks`) están en `.gitignore`. Nunca subir claves de firma ni el `.env`: el repo es público, así que tampoco URLs ni claves del proyecto de Supabase, PINs ni datos personales.
 - Mantener el README al día cuando cambie la funcionalidad, los comandos o la configuración.
 
 ## Ideas pendientes (no hechas)
@@ -98,4 +98,3 @@ npm run android      # build + cap sync + abre Android Studio
 - Icono y splash propios (`@capacitor/assets`), a partir de `Logo.jsx`.
 - Que el botón Atrás de Android cierre la hoja o el menú en vez de salir (`@capacitor/app`).
 - Vibración al marcar comprado o reservar (`@capacitor/haptics`).
-- Licencia (MIT) si el repo se hace público.
