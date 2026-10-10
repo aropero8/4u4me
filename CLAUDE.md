@@ -69,6 +69,7 @@ Los emails de las cuentas están en dos sitios que deben coincidir: `src/persona
 - Identidad (`antojo_identidad`) guardada aparte de la sesión de Supabase para poder abrir sin conexión aunque el token haya caducado.
 - Migración: si existe la clave local antigua `wishlist_items`, al entrar como Alberto se sube a su lista (upsert por id, idempotente) y se borra.
 - Respeta `safe-area-inset` (notch y barra de gestos).
+- Icono de Android: adaptativo en vectores (`res/drawable/ic_launcher_{foreground,background}.xml`, con capa monocromo para iconos temáticos) y PNG en `mipmap-*` para Android 6–7. Es el mismo dibujo que `Logo.jsx`: si cambia uno, cambiar el otro. El splash es `res/drawable/splash.xml` (fondo `splash_fondo` + `splash_logo.png`); en Android 12+ el sistema usa el icono sobre `windowSplashScreenBackground`.
 
 ## Comandos
 
@@ -97,6 +98,5 @@ npm run android      # build + cap sync + abre Android Studio
 
 - Foto del producto con `@capacitor/camera` (y Supabase Storage).
 - Editar sin conexión con cola de cambios.
-- Icono y splash propios (`@capacitor/assets`), a partir de `Logo.jsx`.
 - Que el botón Atrás de Android cierre la hoja o el menú en vez de salir (`@capacitor/app`).
 - Vibración al marcar comprado o reservar (`@capacitor/haptics`).
