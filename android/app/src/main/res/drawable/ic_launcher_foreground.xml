@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Regalo de 4u4me (el mismo dibujo que src/components/Logo.jsx). -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <group android:pivotX="54" android:pivotY="54" android:scaleX="1.1" android:scaleY="1.1">
+        <path android:strokeColor="#21132C" android:strokeWidth="4.5" android:strokeLineJoin="round"
+            android:pathData="M54 42.5C49 42.5 40 41.5 40 36.8 40 33.2 45 32.6 48.6 35.6 51.2 37.8 53 40 54 42.5Z" />
+        <path android:strokeColor="#21132C" android:strokeWidth="4.5" android:strokeLineJoin="round"
+            android:pathData="M54 42.5C59 42.5 68 41.5 68 36.8 68 33.2 63 32.6 59.4 35.6 56.8 37.8 55 40 54 42.5Z" />
+        <path android:fillColor="#21132C"
+            android:pathData="M36 45H48A3 3 0 0 1 51 48V53A3 3 0 0 1 48 56H36A3 3 0 0 1 33 53V48A3 3 0 0 1 36 45ZM60 45H72A3 3 0 0 1 75 48V53A3 3 0 0 1 72 56H60A3 3 0 0 1 57 53V48A3 3 0 0 1 60 45ZM36 59H51V77H39A3 3 0 0 1 36 74ZM57 59H72V74A3 3 0 0 1 69 77H57Z" />
+    </group>
+</vector>
