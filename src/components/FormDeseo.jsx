@@ -1,5 +1,6 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { PRIORIDADES, leerPrecio } from '../modelo.js';
+import { useAtrasCierra } from '../atras.js';
 import Icono from './Icono.jsx';
 
 const VACIO = { nombre: '', prioridad: 'necesario', precio: '', enlace: '', nota: '' };
@@ -23,11 +24,37 @@ export default function FormDeseo({ inicial, onGuardar, onBorrar, onCerrar }) {
   const modificado = CAMPOS.some((c) => form[c] !== original[c]);
   const cambiar = (campo) => (e) => setForm({ ...form, [campo]: e.target.value });
 
+  useAtrasCierra(true, onCerrar);
   useEffect(() => {
     const alPulsar = (e) => e.key === 'Escape' && onCerrar();
     window.addEventListener('keydown', alPulsar);
     return () => window.removeEventListener('keydown', alPulsar);
   }, [onCerrar]);
+
+  // En iOS (y en navegadores que no encogen la página) el teclado tapa la parte
+  // de abajo: la hoja se sube lo que ocupe (--teclado).
+  const fondo = useRef(null);
+  useEffect(() => {
+    const vv = window.visualViewport;
+    if (!vv) return;
+    const ajustar = () =>
+      fondo.current?.style.setProperty('--teclado', `${Math.max(0, window.innerHeight - vv.height - vv.offsetTop)}px`);
+    vv.addEventListener('resize', ajustar);
+    vv.addEventListener('scroll', ajustar);
+    return () => {
+      vv.removeEventListener('resize', ajustar);
+      vv.removeEventListener('scroll', ajustar);
+    };
+  }, []);
+
+  // Si se pega un enlace en el nombre (lo normal al copiarlo de una tienda),
+  // va al campo Enlace.
+  function pegarEnNombre(e) {
+    const texto = e.clipboardData.getData('text').trim();
+    if (!/^(https?:\/\/|www\.)\S+$/i.test(texto) || form.enlace.trim()) return;
+    e.preventDefault();
+    setForm({ ...form, enlace: texto });
+  }
 
   // Ejecuta guardar o borrar; si falla, la hoja sigue abierta con los datos.
   async function hacer(operacion) {
@@ -57,7 +84,7 @@ export default function FormDeseo({ inicial, onGuardar, onBorrar, onCerrar }) {
   }
 
   return (
-    <div className="overlay" onClick={() => !modificado && !ocupado && onCerrar()}>
+    <div className="overlay" ref={fondo} onClick={() => !modificado && !ocupado && onCerrar()}>
       <form
         className="hoja"
         onSubmit={guardar}
@@ -80,7 +107,9 @@ export default function FormDeseo({ inicial, onGuardar, onBorrar, onCerrar }) {
             autoFocus={!editando}
             value={form.nombre}
             onChange={cambiar('nombre')}
+            onPaste={pegarEnNombre}
             placeholder="Ej. Auriculares inalámbricos"
+            autoCapitalize="sentences"
             enterKeyHint="done"
           />
         </label>
@@ -119,14 +148,22 @@ export default function FormDeseo({ inicial, onGuardar, onBorrar, onCerrar }) {
           </label>
           <label>
             Enlace
-            <input inputMode="url" value={form.enlace} onChange={cambiar('enlace')} placeholder="Opcional" />
+            <input
+              inputMode="url"
+              autoCapitalize="none"
+              autoCorrect="off"
+              spellCheck="false"
+              value={form.enlace}
+              onChange={cambiar('enlace')}
+              placeholder="Opcional"
+            />
           </label>
         </div>
         {precioInvalido && <p className="error">Escribe el precio con números, por ejemplo 24,90.</p>}
 
         <label>
           Nota
-          <textarea rows="2" value={form.nota} onChange={cambiar('nota')} placeholder="Talla, color, dónde lo viste…" />
+          <textarea rows="2" autoCapitalize="sentences" value={form.nota} onChange={cambiar('nota')} placeholder="Talla, color, dónde lo viste…" />
         </label>
 
         {confirmarBorrado ? (

@@ -69,7 +69,7 @@ export default function Deseo({ deseo, editable, reserva, acciones }) {
                 <button
                   className="anular"
                   disabled={ocupado}
-                  onClick={mientras(() => acciones.anularReserva(reserva))}
+                  onClick={mientras(() => acciones.anularReserva(reserva, deseo))}
                 >
                   Anular
                 </button>

@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { PERSONAS } from '../personas.js';
 import { esErrorDeRed } from '../supabase.js';
+import { useAtrasCierra } from '../atras.js';
 import {
   cargarDatos,
   crearDeseo,
@@ -12,6 +13,8 @@ import {
   leerCopia,
   guardarCopia,
   migrarDeseosLocales,
+  leerUltimaPrioridad,
+  guardarUltimaPrioridad,
 } from '../datos.js';
 import Lista from './Lista.jsx';
 import FormDeseo from './FormDeseo.jsx';
@@ -29,10 +32,24 @@ export default function Principal({ uid, persona, onSalir }) {
   const [menu, setMenu] = useState(null); // null = cerrado; 'abierto'; 'salir' = confirmando
   const indiceMio = PERSONAS.findIndex((p) => p.id === persona.id);
   const [pestana, setPestana] = useState(indiceMio);
+  const [ultimaPrioridad, setUltimaPrioridad] = useState('necesario'); // la del último deseo añadido
   const carril = useRef(null);
   const pestanas = useRef(null);
+  const otro = PERSONAS.find((p) => p.id !== persona.id);
 
   const avisar = (texto, deshacer) => setAviso({ texto, deshacer });
+
+  useEffect(() => {
+    leerUltimaPrioridad().then((p) => p && setUltimaPrioridad(p));
+  }, []);
+
+  useAtrasCierra(Boolean(menu), () => setMenu(null));
+  useEffect(() => {
+    if (!menu) return;
+    const alPulsar = (e) => e.key === 'Escape' && setMenu(null);
+    window.addEventListener('keydown', alPulsar);
+    return () => window.removeEventListener('keydown', alPulsar);
+  }, [menu]);
 
   // --- Datos -------------------------------------------------------------
 
@@ -130,6 +147,8 @@ export default function Principal({ uid, persona, onSalir }) {
         } else {
           const nuevo = await crearDeseo(deseo);
           aplicar((d) => ({ deseos: [nuevo, ...d.deseos] }));
+          setUltimaPrioridad(nuevo.prioridad);
+          guardarUltimaPrioridad(nuevo.prioridad);
         }
       }),
     alternarComprado: (deseo) =>
@@ -147,17 +166,21 @@ export default function Principal({ uid, persona, onSalir }) {
           reservas: d.reservas.filter((r) => r.deseo_id !== deseo.id),
         }));
       }),
-    reservar: (deseo) =>
+    // Al deshacer (conAviso = false) no se ofrece deshacer otra vez.
+    reservar: (deseo, conAviso = true) =>
       guardar(async () => {
         const reserva = await reservar(deseo.id);
         aplicar((d) => ({ reservas: [...d.reservas, reserva] }));
+        if (conAviso) avisar(`Se lo regalas tú. ${otro.nombre} no lo verá.`, () => acciones.anularReserva(reserva, deseo, false));
       }).catch(() => {}),
-    anularReserva: (reserva) =>
+    anularReserva: (reserva, deseo, conAviso = true) =>
       guardar(async () => {
         await anularReserva(reserva.id);
         aplicar((d) => ({ reservas: d.reservas.filter((r) => r.id !== reserva.id) }));
+        if (conAviso) avisar(`Reserva de «${deseo.nombre}» anulada.`, () => acciones.reservar(deseo, false));
       }).catch(() => {}),
     editar: (deseo) => setForm(deseo),
+    anadir: () => setForm({ prioridad: ultimaPrioridad }),
   };
 
   // --- Pestañas (se cambian tocando o deslizando) --------------------------
@@ -192,7 +215,6 @@ export default function Principal({ uid, persona, onSalir }) {
 
   const miPerfilFalta =
     conexion === 'ok' && datos && !datos.perfiles.some((p) => p.id === uid);
-  const otro = PERSONAS.find((p) => p.id !== persona.id);
   // Con la lista propia vacía, el botón de añadir ya está en el centro.
   const hayPendientesMios = datos?.deseos.some((d) => d.propietario === uid && !d.comprado);
 
@@ -280,7 +302,7 @@ export default function Principal({ uid, persona, onSalir }) {
                   deseos={datos.deseos.filter((d) => (d.propietario === uid) === esMia)}
                   reservas={esMia ? [] : datos.reservas}
                   acciones={acciones}
-                  onAnadir={() => setForm({})}
+                  onAnadir={acciones.anadir}
                 />
               ) : (
                 conexion === 'cargando' && (
@@ -297,7 +319,7 @@ export default function Principal({ uid, persona, onSalir }) {
       </div>
 
       {!form && pestana === indiceMio && hayPendientesMios && (
-        <button className="fab" onClick={() => setForm({})}>
+        <button className="fab" onClick={acciones.anadir}>
           <Icono nombre="mas" tamano={22} />
           Añadir
         </button>

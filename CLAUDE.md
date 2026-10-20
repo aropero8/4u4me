@@ -4,7 +4,7 @@ Contexto del proyecto para Claude Code.
 
 ## Qué es
 
-**4u4me**: app de wishlist para Android compartida entre dos personas, **Alberto** y **Alba**. Cada uno apunta cosas que quiere o necesita con una prioridad, ve la lista del otro y puede reservar en secreto lo que le va a regalar. Uso personal, pero el repo es público en GitHub (licencia GPL-3.0 o posterior): debe quedar limpio y comprensible, y sin secretos.
+**4u4me**: app de wishlist para Android (y para iPhone como web app en Firebase Hosting) compartida entre dos personas, **Alberto** y **Alba**. Cada uno apunta cosas que quiere o necesita con una prioridad, ve la lista del otro y puede reservar en secreto lo que le va a regalar. Uso personal, pero el repo es público en GitHub (licencia GPL-3.0 o posterior): debe quedar limpio y comprensible, y sin secretos.
 
 **Nombre**: la app se llamaba **Antojo**. Lo visible (título, `appName`, `app_name` de Android, README, repo `aropero8/4u4me`) es ahora **4u4me**, pero los identificadores internos conservan "antojo" **a propósito y no deben renombrarse**: el `appId` `com.alberto.antojo` (cambiarlo hace que Android la trate como otra app y se pierde la migración de `wishlist_items`), los emails `@antojo.local` (son las cuentas de Supabase Auth y están en `schema.sql`), las claves de Preferences `antojo_*` (se perderían la sesión y la copia) y el prefijo del canal de Realtime.
 
@@ -14,6 +14,7 @@ Contexto del proyecto para Claude Code.
 - Capacitor 7 para empaquetar en Android (`@capacitor/android`, `@capacitor/core`, `@capacitor/cli`).
 - Datos en **Supabase** (`@supabase/supabase-js`): Postgres con RLS, Auth y Realtime.
 - `@capacitor/preferences` (nativo en Android, localStorage en navegador) para la sesión, la identidad y la copia sin conexión.
+- `@capacitor/app` para el botón Atrás de Android (`atras.js`).
 - CSS plano en `src/App.css`, sin frameworks de estilos.
 - `appId`: `com.alberto.antojo` · `webDir`: `dist`.
 - `vite.config.js` usa `base: './'`: es obligatorio para que Capacitor cargue los assets. No quitarlo.
@@ -30,6 +31,7 @@ src/
   datos.js            CRUD de deseos y reservas, Realtime, copia local, migración
   personas.js         PERSONAS: id, nombre y email de cada cuenta
   modelo.js           PRIORIDADES, orden, formato y lectura de precios
+  atras.js            useAtrasCierra: «Atrás» cierra la hoja o el menú (entrada en history; en Android, `@capacitor/app` backButton)
   components/
     Login.jsx         "¿Quién eres?" + PIN
     Principal.jsx     estado de datos, pestañas (scroll-snap), acciones, avisos
@@ -38,6 +40,7 @@ src/
     FormDeseo.jsx     hoja inferior de alta/edición/borrado
     Icono.jsx         iconos SVG de trazo hechos a mano (sin librería)
     Logo.jsx          logotipo (regalo sobre el degradado de la marca)
+public/               manifest.webmanifest e iconos PNG de la web app (generados desde Logo.jsx)
 supabase/
   schema.sql          tablas, trigger de perfiles, permisos, RLS y Realtime
   pruebas_rls.sql     pruebas de RLS para el SQL Editor (todo en una transacción con rollback)
@@ -61,8 +64,9 @@ Los emails de las cuentas están en dos sitios que deben coincidir: `src/persona
 
 - Pestañas Alberto / Alba como control segmentado (tocar o deslizar, con scroll-snap; el indicador sigue al carril con `--progreso`); se abre en la propia.
 - Lista propia: alta (botón "Añadir"), marcar comprado con el círculo (aviso con "Deshacer"), tocar la tarjeta para editar; borrar está en la hoja de edición con confirmación dentro de la propia hoja (sin `confirm()` nativo). Pendientes agrupados por prioridad con contador y subtotal; total en € arriba; "Comprados" plegado al final. Dentro de cada grupo, el más reciente primero.
-- Lista ajena: solo lectura; "Lo regalo yo" reserva; "Lo regalas tú" + "Anular"; resumen "Le regalas N cosas · X €" arriba.
-- Hoja de edición: tocar fuera solo cierra si no hay cambios; Escape cierra.
+- Lista ajena: solo lectura; "Lo regalo yo" reserva; "Lo regalas tú" + "Anular" (ambos con "Deshacer" en el aviso); resumen "Le regalas N cosas · X €" arriba.
+- Hoja de edición: tocar fuera solo cierra si no hay cambios; Escape y Atrás cierran. Se sube con el teclado (`--teclado`, vía `visualViewport`, para iOS). Un alta empieza con la prioridad de la última (`antojo_prioridad`). Pegar una URL en el nombre la mete en Enlace. El precio admite "24,90 €".
+- Web app: `firebase.json` sirve `dist` en Firebase Hosting (`npm run web`); `.firebaserc` no se sube. En iPhone se instala desde Safari.
 - Estilo: tema oscuro; colores en variables de `:root` en `App.css` (marca lila → rosa en `--degradado`, prioridades `--muy`/`--necesario`/`--capricho`, reservas `--regalo`). `capacitor.config.json` pone el mismo fondo (`backgroundColor`) para que no haya destello blanco al abrir.
 - Realtime: ante cualquier cambio en `deseos` o `reservas` se recarga todo (los datos son pocos).
 - Sin conexión: se muestra la copia guardada (`antojo_copia`, ligada al uid). Los cambios no se encolan: se avisa si fallan y el formulario no se cierra.
@@ -78,6 +82,7 @@ npm install
 npm run dev          # navegador (dos personas a la vez: localhost:5173 y [::1]:5173, o una ventana de incógnito)
 npm run build
 npm run android      # build + cap sync + abre Android Studio
+npm run web          # build + despliegue en Firebase Hosting (antes: firebase-tools login y use --add)
 ```
 
 ## Estado
@@ -98,5 +103,4 @@ npm run android      # build + cap sync + abre Android Studio
 
 - Foto del producto con `@capacitor/camera` (y Supabase Storage).
 - Editar sin conexión con cola de cambios.
-- Que el botón Atrás de Android cierre la hoja o el menú en vez de salir (`@capacitor/app`).
 - Vibración al marcar comprado o reservar (`@capacitor/haptics`).
