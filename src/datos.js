@@ -116,6 +116,22 @@ export async function borrarCopia() {
   await Preferences.remove({ key: CLAVE_COPIA });
 }
 
+// Prioridad del último deseo añadido: la siguiente alta empieza con ella.
+const CLAVE_PRIORIDAD = 'antojo_prioridad';
+
+export async function leerUltimaPrioridad() {
+  try {
+    const { value } = await Preferences.get({ key: CLAVE_PRIORIDAD });
+    return PRIORIDADES[value] ? value : null;
+  } catch {
+    return null;
+  }
+}
+
+export async function guardarUltimaPrioridad(prioridad) {
+  await Preferences.set({ key: CLAVE_PRIORIDAD, value: prioridad }).catch(() => {});
+}
+
 // ---------------------------------------------------------------------------
 // Migración desde la versión solo local
 // ---------------------------------------------------------------------------

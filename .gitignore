@@ -13,6 +13,10 @@ npm-debug.log*
 .env.*
 !.env.example
 
+# Firebase Hosting: el id del proyecto y la caché del despliegue son locales
+.firebaserc
+.firebase/
+
 # Editor y sistema
 .vscode/*
 !.vscode/extensions.json

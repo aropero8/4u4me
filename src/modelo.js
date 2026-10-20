@@ -28,8 +28,9 @@ export const dominioDe = (enlace) => {
 };
 
 // Texto del formulario → número. '' si está vacío; NaN si no es un precio válido.
+// Admite "24,90", "24.90" y "24,90 €".
 export const leerPrecio = (v) => {
-  const s = String(v).trim().replace(',', '.');
+  const s = String(v).replace(/[\s€]/g, '').replace(',', '.');
   if (s === '') return '';
   const n = Number(s);
   return Number.isFinite(n) && n >= 0 ? n : NaN;
