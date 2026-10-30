@@ -49,6 +49,7 @@ create table public.deseos (
   nombre text not null check (btrim(nombre) <> ''),
   prioridad text not null default 'necesario'
     check (prioridad in ('muy', 'necesario', 'capricho')),
+  ganas smallint not null default 2 check (ganas between 1 and 3), -- solo cuenta en los caprichos
   precio numeric(10, 2) check (precio >= 0), -- null = sin precio
   enlace text not null default '',
   nota text not null default '',

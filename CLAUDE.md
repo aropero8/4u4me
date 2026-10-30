@@ -44,6 +44,7 @@ public/               manifest.webmanifest e iconos PNG de la web app (generados
 supabase/
   schema.sql          tablas, trigger de perfiles, permisos, RLS y Realtime
   pruebas_rls.sql     pruebas de RLS para el SQL Editor (todo en una transacción con rollback)
+  migraciones/        scripts idempotentes para actualizar una base ya creada
 ```
 
 El acceso a datos está solo en `src/` (`supabase.js`, `datos.js`); los componentes no llaman a Supabase directamente.
@@ -51,7 +52,9 @@ El acceso a datos está solo en `src/` (`supabase.js`, `datos.js`); los componen
 ## Modelo de datos (Supabase)
 
 - `perfiles (id = auth.users.id, nombre)`: los dos miembros. Los crea un trigger al crear la cuenta en Auth, **solo** si el email está en `privado.nombre_de_miembro()`.
-- `deseos (id, propietario, nombre, prioridad, precio, enlace, nota, comprado, creado)`: `propietario` por defecto `auth.uid()`; `prioridad` en `'muy' | 'necesario' | 'capricho'`; `precio` numeric o null.
+- `deseos (id, propietario, nombre, prioridad, ganas, precio, enlace, nota, comprado, creado)`: `propietario` por defecto `auth.uid()`; `prioridad` en `'muy' | 'necesario' | 'capricho'`; `ganas` 1–3 (por defecto 2; solo se muestra y ordena en los caprichos); `precio` numeric o null.
+
+`schema.sql` es el esquema completo para una base nueva. Cada cambio de esquema añade además un script idempotente en `supabase/migraciones/` (`AAAA-MM-DD_nombre.sql`) para la base ya creada, que hay que ejecutar antes de publicar la app que lo usa.
 - `reservas (id, deseo_id único, reservado_por, fecha)`: la PK es un uuid aleatorio a propósito (los DELETE de Realtime envían la PK a todos sin aplicar RLS; así no revelan el deseo).
 
 En la app (`datos.js`) un deseo usa `precio: ''` para "sin precio" y `creado` en milisegundos, como en la versión anterior.
@@ -63,7 +66,7 @@ Los emails de las cuentas están en dos sitios que deben coincidir: `src/persona
 ## Funcionalidad actual
 
 - Pestañas Alberto / Alba como control segmentado (tocar o deslizar, con scroll-snap; el indicador sigue al carril con `--progreso`); se abre en la propia.
-- Lista propia: alta (botón "Añadir"), marcar comprado con el círculo (aviso con "Deshacer"), tocar la tarjeta para editar; borrar está en la hoja de edición con confirmación dentro de la propia hoja (sin `confirm()` nativo). Pendientes agrupados por prioridad con contador y subtotal; total en € arriba; "Comprados" plegado al final. Dentro de cada grupo, el más reciente primero.
+- Lista propia: alta (botón "Añadir"), marcar comprado con el círculo (aviso con "Deshacer"), tocar la tarjeta para editar; borrar está en la hoja de edición con confirmación dentro de la propia hoja (sin `confirm()` nativo). Pendientes agrupados por prioridad con contador y subtotal; total en € arriba; "Comprados" plegado al final. Dentro de cada grupo, el más reciente primero; en Capricho, antes por ganas (corazones en la tarjeta, selector «¿Cuántas ganas?» en la hoja solo si la prioridad es Capricho).
 - Lista ajena: solo lectura; "Lo regalo yo" reserva; "Lo regalas tú" + "Anular" (ambos con "Deshacer" en el aviso); resumen "Le regalas N cosas · X €" arriba.
 - Hoja de edición: tocar fuera solo cierra si no hay cambios; Escape y Atrás cierran. Se sube con el teclado (`--teclado`, vía `visualViewport`, para iOS). Un alta empieza con la prioridad de la última (`antojo_prioridad`). Pegar una URL en el nombre la mete en Enlace. El precio admite "24,90 €".
 - Web app: `firebase.json` sirve `dist` en Firebase Hosting (`npm run web`); `.firebaserc` no se sube. En iPhone se instala desde Safari.

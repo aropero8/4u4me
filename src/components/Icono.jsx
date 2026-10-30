@@ -5,6 +5,9 @@ const TRAZOS = {
   cerrar: <path d="M6 6l12 12M18 6L6 18" />,
   abajo: <path d="M6 9l6 6 6-6" />,
   enlace: <path d="M7 17L17 7M9 7h8v8" />,
+  corazon: (
+    <path d="M12 20C7 16.6 3.5 13.3 3.5 9.4 3.5 6.9 5.4 5 7.8 5c1.7 0 3.2.9 4.2 2.4C13 5.9 14.5 5 16.2 5c2.4 0 4.3 1.9 4.3 4.4 0 3.9-3.5 7.2-8.5 10.6z" />
+  ),
   regalo: (
     <>
       <rect x="3" y="8" width="18" height="4" rx="1" />

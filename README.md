@@ -7,7 +7,7 @@ Cada uno apunta lo que quiere o necesita con una prioridad, ve la lista del otro
 ## Funciones
 
 - Dos pestañas, **Alberto** y **Alba**. Se cambia tocando o deslizando; al abrir se muestra la tuya.
-- **Tu lista**: añadir con el botón **Añadir**, marcar como comprado con el círculo (el aviso permite **deshacer**) y tocar un deseo para editarlo o borrarlo. Cada deseo tiene **nombre** y **prioridad** (Muy necesario, Necesario o Capricho) y, opcionalmente, **precio**, **enlace** y **nota**. Un deseo nuevo empieza con la prioridad del último que añadiste, y si pegas un enlace en el nombre va directo al campo **Enlace**. Lo pendiente se agrupa por prioridad, con el total en euros de cada grupo y de toda la lista; lo comprado queda plegado al final.
+- **Tu lista**: añadir con el botón **Añadir**, marcar como comprado con el círculo (el aviso permite **deshacer**) y tocar un deseo para editarlo o borrarlo. Cada deseo tiene **nombre** y **prioridad** (Muy necesario, Necesario o Capricho; los caprichos llevan además de 1 a 3 **corazones** según las ganas, y se ordenan por ellos) y, opcionalmente, **precio**, **enlace** y **nota**. Un deseo nuevo empieza con la prioridad del último que añadiste, y si pegas un enlace en el nombre va directo al campo **Enlace**. Lo pendiente se agrupa por prioridad, con el total en euros de cada grupo y de toda la lista; lo comprado queda plegado al final.
 - **La lista de la otra persona**: solo lectura, con un botón **«Lo regalo yo»** en cada deseo para reservarlo. Si lo reservas, aparece «Lo regalas tú» y puedes anularlo (reservar y anular también se pueden **deshacer** desde el aviso); arriba se ve cuántas cosas le regalas y cuánto suman.
 - **Las reservas son secretas**: el dueño de una lista nunca ve qué tiene reservado. Lo garantiza la base de datos (ver más abajo), no solo la interfaz.
 - Los cambios aparecen **en tiempo real** en el otro móvil.
@@ -49,6 +49,10 @@ Lo único que RLS no puede impedir es el acceso de quien administra el proyecto 
 6. **Rellenar el `.env`.** Copia `.env.example` como `.env` y pon:
    - `VITE_SUPABASE_URL`: la *Project URL* (*Project Settings → Data API*, o el botón **Connect** de arriba).
    - `VITE_SUPABASE_ANON_KEY`: la clave pública del proyecto (*Project Settings → API Keys*): la **Publishable key** (`sb_publishable_…`) o, si tu panel la muestra, la **anon public**. Nunca la *secret* ni la *service_role*.
+
+### Actualizar una base ya creada
+
+Si la base se creó con una versión anterior de `schema.sql`, ejecuta en el *SQL Editor* los scripts de `supabase/migraciones/` posteriores a esa fecha, en orden, **antes** de publicar la nueva versión de la app (si no, la app no podrá leer los deseos). Se pueden repetir sin problema.
 
 ## Probar en el navegador
 
@@ -116,6 +120,7 @@ public/               manifest e iconos de la versión web
 supabase/
   schema.sql          tablas, políticas RLS y Realtime
   pruebas_rls.sql     pruebas de las políticas
+  migraciones/        cambios para bases creadas con un schema.sql anterior
 capacitor.config.json
 firebase.json         Firebase Hosting (versión web)
 vite.config.js
