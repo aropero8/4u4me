@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { fmtPrecio, urlDe, dominioDe } from '../modelo.js';
+import { GANAS, fmtPrecio, urlDe, dominioDe } from '../modelo.js';
 import Icono from './Icono.jsx';
 
 // Tarjeta de un deseo. Si es editable (lista propia) se marca como comprado
@@ -43,6 +43,13 @@ export default function Deseo({ deseo, editable, reserva, acciones }) {
       >
         <div className="fila">
           <h4>{deseo.nombre}</h4>
+          {deseo.prioridad === 'capricho' && GANAS[deseo.ganas] && (
+            <span className="ganas" role="img" aria-label={GANAS[deseo.ganas]}>
+              {Array.from({ length: deseo.ganas }, (_, i) => (
+                <Icono key={i} nombre="corazon" tamano={13} />
+              ))}
+            </span>
+          )}
           {deseo.precio !== '' && <span className="precio">{fmtPrecio(deseo.precio)}</span>}
         </div>
         {deseo.nota && <p className="nota">{deseo.nota}</p>}

@@ -1,9 +1,9 @@
 import { useEffect, useRef, useState } from 'react';
-import { PRIORIDADES, leerPrecio } from '../modelo.js';
+import { PRIORIDADES, GANAS, GANAS_POR_DEFECTO, leerPrecio } from '../modelo.js';
 import { useAtrasCierra } from '../atras.js';
 import Icono from './Icono.jsx';
 
-const VACIO = { nombre: '', prioridad: 'necesario', precio: '', enlace: '', nota: '' };
+const VACIO = { nombre: '', prioridad: 'necesario', ganas: GANAS_POR_DEFECTO, precio: '', enlace: '', nota: '' };
 const CAMPOS = Object.keys(VACIO);
 
 // Hoja inferior para crear o editar un deseo propio. Solo se cierra si se
@@ -134,6 +134,32 @@ export default function FormDeseo({ inicial, onGuardar, onBorrar, onCerrar }) {
             ))}
           </div>
         </div>
+
+        {form.prioridad === 'capricho' && (
+          <div className="campo">
+            <span className="label" id="etiqueta-ganas">
+              ¿Cuántas ganas?
+            </span>
+            <div className="ganas-selector p-capricho">
+              <div role="radiogroup" aria-labelledby="etiqueta-ganas">
+                {Object.entries(GANAS).map(([n, texto]) => (
+                  <button
+                    type="button"
+                    key={n}
+                    role="radio"
+                    aria-checked={form.ganas === Number(n)}
+                    aria-label={texto}
+                    className={Number(n) <= form.ganas ? 'on' : ''}
+                    onClick={() => setForm({ ...form, ganas: Number(n) })}
+                  >
+                    <Icono nombre="corazon" tamano={26} />
+                  </button>
+                ))}
+              </div>
+              <span aria-hidden="true">{GANAS[form.ganas]}</span>
+            </div>
+          </div>
+        )}
 
         <div className="dos">
           <label>

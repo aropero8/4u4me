@@ -1,14 +1,15 @@
 import { Preferences } from '@capacitor/preferences';
 import { supabase } from './supabase.js';
-import { PRIORIDADES } from './modelo.js';
+import { PRIORIDADES, GANAS_POR_DEFECTO } from './modelo.js';
 
-const COLUMNAS_DESEO = 'id, propietario, nombre, prioridad, precio, enlace, nota, comprado, creado';
+const COLUMNAS_DESEO = 'id, propietario, nombre, prioridad, ganas, precio, enlace, nota, comprado, creado';
 const COLUMNAS_RESERVA = 'id, deseo_id, reservado_por, fecha';
 
 // Fila de la base de datos → deseo de la app (precio '' = sin precio; creado en ms).
 const aDeseo = (fila) => ({
   ...fila,
   precio: fila.precio ?? '',
+  ganas: fila.ganas ?? GANAS_POR_DEFECTO,
   creado: Date.parse(fila.creado),
 });
 
@@ -16,6 +17,7 @@ const aDeseo = (fila) => ({
 const aFila = (d) => ({
   nombre: d.nombre,
   prioridad: d.prioridad,
+  ganas: d.ganas,
   precio: d.precio === '' ? null : d.precio,
   enlace: d.enlace,
   nota: d.nota,

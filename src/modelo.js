@@ -6,9 +6,18 @@ export const PRIORIDADES = {
   capricho: { label: 'Capricho', orden: 2 },
 };
 
-// Por prioridad y, dentro de cada una, el más reciente primero.
+// Cuántas ganas hay de un capricho (1 a 3 corazones). En las otras prioridades
+// se guarda pero no cuenta.
+export const GANAS = { 1: 'Me apetece', 2: 'Me haría ilusión', 3: '¡Me encantaría!' };
+export const GANAS_POR_DEFECTO = 2;
+
+const ganasDe = (d) => (d.prioridad === 'capricho' ? d.ganas : 0);
+
+// Por prioridad; los caprichos, por ganas; y a igualdad, el más reciente primero.
 export const ordenarDeseos = (a, b) =>
-  PRIORIDADES[a.prioridad].orden - PRIORIDADES[b.prioridad].orden || b.creado - a.creado;
+  PRIORIDADES[a.prioridad].orden - PRIORIDADES[b.prioridad].orden ||
+  ganasDe(b) - ganasDe(a) ||
+  b.creado - a.creado;
 
 export const fmtPrecio = (n) =>
   new Intl.NumberFormat('es-ES', { style: 'currency', currency: 'EUR' }).format(n);
